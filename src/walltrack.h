@@ -9,7 +9,7 @@ void walltrackleft(int kp, int kd, int speed = 2500, int distance = 150) {
 
     // Inner corner: front wall approaching, turn left to follow path
     if (frontDist > 0 && frontDist < 200) {
-        motors.move(0, speed);
+        motors.move(-1000, speed);
         lastError = 0;
         return;
     }
@@ -41,7 +41,7 @@ void walltrackright(int kp, int kd, int speed = 2500, int distance = 150) {
 
     // Inner corner: front wall approaching, turn right to follow path
     if (frontDist > 0 && frontDist < 200) {
-        motors.move(speed, 0);
+        motors.move(speed, -1000);
         lastError = 0;
         return;
     }

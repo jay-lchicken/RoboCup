@@ -14,14 +14,15 @@ struct ColorThresholds {
     float white_h_min = 62, white_h_max = 72;
     float white_s_min = 26, white_s_max = 33;
     float white_v_min = 8, white_v_max = 10;
-    
+
+
     float red_h_min1 = 0, red_h_max1 = 15;
     float red_h_min2 = 345, red_h_max2 = 360;
     float red_s_min = 30, red_s_max = 100;
     float red_v_min = 20, red_v_max = 100;
     
     float green_h_min = 98, green_h_max = 110;
-    float green_s_min = 35000, green_s_max = 35; //lower s min if darker ori 37. increase s min if it senses black on green
+    float green_s_min = 45000, green_s_max = 35; //lower s min if darker ori 37. increase s min if it senses black on green
     float green_v_min = 8, green_v_max = 12;
     
     float black_h_min = 86, black_h_max = 96;

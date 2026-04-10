@@ -74,12 +74,15 @@ void setup() {
         }
         readCount++;
         while (gyro.getEulerY() > 20 || gyro.getEulerY() < -7) {
+
             evo.clearDisplay();
             evo.writeToDisplay("Up/Down Ramp", 0, 0);
             evo.drawDisplay();
+
+            // findline();
             csleft.getRawRGBC(&lr, &lg, &lb, &lc);
             csright.getRawRGBC(&rr, &rg, &rb, &rc);
-            linetrack(15, 30, 12, 3000, lc, rc);
+            linetrack(26, 30, 10, 3300, lc, rc);
         }
         evo.clearDisplay();
         if (lcolor == 2 || rcolor == 2) //if any sense green
@@ -195,7 +198,7 @@ void setup() {
                     delay(1000);
                 }
             }
-        } else if ((4096-lineLeader.readADC(4)) > 160) {
+        } else if ((4096 - lineLeader.readADC(2)) > 160) {
             motors.brake();
             evo.clearDisplay();
             evo.writeToDisplay("Silver Sensed", 0, 0);
@@ -206,16 +209,27 @@ void setup() {
                 evo.clearDisplay();
                 evo.writeToDisplay("Entering Evac Zone", 0, 0);
                 evo.drawDisplay();
-                delay(1000);
                 motors.moveDegrees(2000, 2000, 200, BRAKE);
+                delay(1000);
+
+
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                int scene = 0;
                 if (leftds.getDistance() < rightds.getDistance()) {
-                    while (leftds.getDistance() <165 && lcolor != 3 && rcolor != 3) {
+                    evo.clearDisplay();
+                    evo.writeToDisplay("LEFT<RIGHT", 0, 32);
+                    evo.drawDisplay();
+                    while (lcolor != 3 && rcolor != 3) {
+                        walltrackright(120, 50, 2000, 145);
 
-                        walltrackright(80, 20);
                         csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                        csright.getRawRGBC(&rr, &rg, &rb, &rc);
+
+                        if (leftds.getDistance() > 250) {
+                            break;
+                        }
 
                         getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                         evo.clearDisplay();
@@ -223,13 +237,25 @@ void setup() {
                         evo.drawDisplay();
                     }
                 } else {
-                    while (rightds.getDistance() <165 && lcolor != 3 && rcolor != 3) {
-                        walltrackleft(80, 20);
+                    scene = 1;
+                    evo.clearDisplay();
+                    evo.writeToDisplay("LEFT>RIGHT", 0, 32);
+                    evo.drawDisplay();
+                    while (lcolor != 3 && rcolor != 3) {
+
+                        walltrackleft(120, 50, 2000, 145);
+                        csleft.getRawRGBC(&rr, &rg, &rb, &rc);
+
                         csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                        int rightdsva = rightds.getDistance();
+                        if (rightdsva> 250) {
+                            break;
+                        }
 
                         getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                         evo.clearDisplay();
                         evo.writeToDisplay(rcolor, 0, 32);
+                        evo.writeToDisplay("rightds: "+rightdsva, 0, 32);
 
                         evo.drawDisplay();
                     }
@@ -237,6 +263,14 @@ void setup() {
 
                 motors.brake();
                 evo.clearDisplay();
+                delay(2000);
+                if (scene == 1) {
+                    motors.moveDegrees(-2000, -2000, 80, BRAKE);
+                    motors.moveDegrees(2000, -2000, 100, BRAKE);
+                }else if (scene == 0){
+                    motors.moveDegrees(-2000, -2000, 80, BRAKE);
+                    motors.moveDegrees(-2000, 2000, 100, BRAKE);
+                }
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
@@ -245,10 +279,16 @@ void setup() {
             if (!inLoopCount) {
                 criteriaCount++;
                 inLoopCount = true;
+                evo.clearDisplay();
+                evo.writeToDisplay(criteriaCount, 32,32);
+                evo.drawDisplay();
             }
-            if (criteriaCount > 3) {
+            if (criteriaCount > 5) {
                 break;
             }
+            evo.clearDisplay();
+            evo.writeToDisplay("DETECTED FRONT", 32,32);
+            evo.drawDisplay();
             motors.brake();
             if (leftds.getDistance() < rightds.getDistance()) {
                 // turn right
@@ -307,7 +347,7 @@ void setup() {
                 criteriaCount = 0;
             }
         }
-        linetrack(25, 30, 10, 3000, lc, rc);
+        linetrack(28, 32, 12, 3000, lc, rc);
     }
     motors.brake();
 }
