@@ -85,7 +85,7 @@ void setup() {
             linetrack(26, 30, 10, 3300, lc, rc);
         }
         evo.clearDisplay();
-        if (lcolor == 2 || rcolor == 2) //if any sense green
+        if ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)) //if any sense green and that its not a super close object
         {
             motors.brake();
             evo.clearDisplay();
