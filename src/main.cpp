@@ -228,6 +228,7 @@ void setup() {
                         csright.getRawRGBC(&rr, &rg, &rb, &rc);
 
                         if (leftds.getDistance() > 250) {
+                            scene = 2;
                             break;
                         }
 
@@ -249,6 +250,7 @@ void setup() {
                         csright.getRawRGBC(&rr, &rg, &rb, &rc);
                         int rightdsva = rightds.getDistance();
                         if (rightdsva> 250) {
+                            scene = 3;
                             break;
                         }
 
@@ -264,12 +266,19 @@ void setup() {
                 motors.brake();
                 evo.clearDisplay();
                 delay(2000);
-                if (scene == 1) {
+                if (scene == 3) {
                     motors.moveDegrees(-2000, -2000, 80, BRAKE);
                     motors.moveDegrees(2000, -2000, 100, BRAKE);
-                }else if (scene == 0){
+                }else if (scene == 2){
                     motors.moveDegrees(-2000, -2000, 80, BRAKE);
                     motors.moveDegrees(-2000, 2000, 100, BRAKE);
+                }else if (scene == 1) {
+                    motors.moveDegrees(-2000, -2000, 180, BRAKE);
+                    motors.moveDegrees(2000, -2000, 100, BRAKE);
+                }else if (scene == 0) {
+                    motors.moveDegrees(-2000, -2000, 180, BRAKE);
+                    motors.moveDegrees(-2000, 2000, 100, BRAKE);
+
                 }
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
