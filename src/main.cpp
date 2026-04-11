@@ -85,7 +85,7 @@ void setup() {
             linetrack(26, 30, 10, 3300, lc, rc);
         }
         evo.clearDisplay();
-        if (millis() >= greenCooldownUntil && ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)))
+        if ( ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)))
         //if any sense green and that its not a super close object
         {
             motors.brake();
@@ -246,8 +246,7 @@ void setup() {
                     delay(1000);
                 }
             }
-            greenCooldownUntil = millis() + 1000; // ignore green for 3s after handling
-        } else if ((4096 - lineLeader.readADC(2)) > 135) {
+        } else if ((4096 - lineLeader.readADC(2)) > 180) {
             motors.brake();
             evo.clearDisplay();
             evo.writeToDisplay("Silver Sensed", 0, 0);
