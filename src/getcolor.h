@@ -45,7 +45,7 @@ Color classifyColor(float h, float s, float v, int c, int r, int g, int b, Color
         return COLOR_GREEN;
     }
     
-    if (c > 110){
+    if (c > 125){
         return COLOR_WHITE;
     }   
     else{
