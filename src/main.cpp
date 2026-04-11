@@ -74,7 +74,6 @@ void setup() {
         }
         readCount++;
         while (gyro.getEulerY() > 20 || gyro.getEulerY() < -7) {
-
             evo.clearDisplay();
             evo.writeToDisplay("Up/Down Ramp", 0, 0);
             evo.drawDisplay();
@@ -85,7 +84,8 @@ void setup() {
             linetrack(26, 30, 10, 3300, lc, rc);
         }
         evo.clearDisplay();
-        if ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)) //if any sense green and that its not a super close object
+        if ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350))
+        //if any sense green and that its not a super close object
         {
             motors.brake();
             evo.clearDisplay();
@@ -198,172 +198,206 @@ void setup() {
                     delay(1000);
                 }
             }
-        } else if ((4096 - lineLeader.readADC(2)) > 160) {
+        } else if ((4096 - lineLeader.readADC(2)) > 140) {
             motors.brake();
             evo.clearDisplay();
             evo.writeToDisplay("Silver Sensed", 0, 0);
             evo.drawDisplay();
             delay(1000);
+            motors.moveDegrees(2000, 2000, 50, BRAKE);
             if (findlinesilver()) {
                 motors.brake();
                 evo.clearDisplay();
                 evo.writeToDisplay("Entering Evac Zone", 0, 0);
                 evo.drawDisplay();
-                motors.moveDegrees(2000, 2000, 200, BRAKE);
+                motors.moveDegrees(2000, 2000, 350, BRAKE);
                 delay(1000);
 
 
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                int scene = 0;
-                if (leftds.getDistance() < rightds.getDistance()) {
-                    evo.clearDisplay();
-                    evo.writeToDisplay("LEFT<RIGHT", 0, 32);
-                    evo.drawDisplay();
-                    while (lcolor != 3 && rcolor != 3) {
-                        walltrackright(120, 50, 2000, 145);
 
-                        csleft.getRawRGBC(&lr, &lg, &lb, &lc);
-                        csright.getRawRGBC(&rr, &rg, &rb, &rc);
-
-                        if (leftds.getDistance() > 250) {
-                            scene = 2;
-                            break;
-                        }
-
-                        getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                        evo.clearDisplay();
-                        evo.writeToDisplay(lcolor, 0, 32);
-                        evo.drawDisplay();
-                    }
-                } else {
-                    scene = 1;
-                    evo.clearDisplay();
-                    evo.writeToDisplay("LEFT>RIGHT", 0, 32);
-                    evo.drawDisplay();
-                    while (lcolor != 3 && rcolor != 3) {
-
-                        walltrackleft(120, 50, 2000, 145);
-                        csleft.getRawRGBC(&rr, &rg, &rb, &rc);
-
-                        csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                        int rightdsva = rightds.getDistance();
-                        if (rightdsva> 250) {
-                            scene = 3;
-                            break;
-                        }
-
-                        getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                        evo.clearDisplay();
-                        evo.writeToDisplay(rcolor, 0, 32);
-                        evo.writeToDisplay("rightds: "+rightdsva, 0, 32);
-
-                        evo.drawDisplay();
-                    }
-                }
-
-                motors.brake();
-                evo.clearDisplay();
-                delay(2000);
-                if (scene == 3) {
-                    motors.moveDegrees(-2000, -2000, 80, BRAKE);
-                    motors.moveDegrees(2000, -2000, 100, BRAKE);
-                }else if (scene == 2){
-                    motors.moveDegrees(-2000, -2000, 80, BRAKE);
-                    motors.moveDegrees(-2000, 2000, 100, BRAKE);
-                }else if (scene == 1) {
-                    motors.moveDegrees(-2000, -2000, 180, BRAKE);
-                    motors.moveDegrees(2000, -2000, 100, BRAKE);
-                }else if (scene == 0) {
-                    motors.moveDegrees(-2000, -2000, 180, BRAKE);
-                    motors.moveDegrees(-2000, 2000, 100, BRAKE);
-
-                }
-                csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                csleft.getRawRGBC(&lr, &lg, &lb, &lc);
-                getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-            }
-        } else if (frontDistance < 90 && frontDistance != 0) {
-            if (!inLoopCount) {
-                criteriaCount++;
-                inLoopCount = true;
-                evo.clearDisplay();
-                evo.writeToDisplay(criteriaCount, 32,32);
-                evo.drawDisplay();
-            }
-            if (criteriaCount > 5) {
-                break;
-            }
-            evo.clearDisplay();
-            evo.writeToDisplay("DETECTED FRONT", 32,32);
-            evo.drawDisplay();
-            motors.brake();
-            if (leftds.getDistance() < rightds.getDistance()) {
-                // turn right
-                motors.moveDegrees(-4700, -4700, 120, BRAKE);
-                motors.moveDegrees(2000, -2000, 125, BRAKE);
-                motors.moveDegrees(4500, 4500, 130, BRAKE);
-                while (lc > 115) {
-                    csleft.getRawRGBC(&lr, &lg, &lb, &lc);
-                    walltrackright(130, 20, 2000, 120);
-                }
-                leftMotor.brake();
-                rightMotor.brake();
-
-                motors.moveDegrees(2000, 2000, 40, BRAKE);
-                motors.moveDegrees(-2000, 2000, 250, BRAKE);
-                delay(500);
-                motors.brake();
-            } else {
-                // turn left
-                motors.moveDegrees(-4700, -4700, 120, BRAKE);
-                motors.moveDegrees(-2000, 2000, 125, BRAKE);
-                motors.moveDegrees(4500, 4500, 130, BRAKE);
-                while (rc > 115) {
+                motors.moveDegrees(2000, -2000, 200, BRAKE);
+                motors.moveDegrees(2000,2000,300,BRAKE);
+                bool is_tuned = false;
+                while (lcolor != 3 && rcolor != 3) {
+                    walltrackleft(29, 32, 2000, 180);
+                    csleft.getRawRGBC(&rr, &rg, &rb, &rc);
                     csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                    walltrackleft(130, 20, 2000, 120);
+
+                    int rightdsva = rightds.getDistance();
+                    if (rightdsva < 190) {
+                        is_tuned = true;
+                    }
+                    if (rightdsva > 240 && is_tuned == true) {
+                        break;
+                    }
+
+                    getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                    evo.clearDisplay();
+                    evo.writeToDisplay(rightdsva, 0, 32);
+                    evo.writeToDisplay(is_tuned, 0, 0);
+                    evo.drawDisplay();
                 }
-                leftMotor.brake();
-                rightMotor.brake();
 
-                motors.moveDegrees(2000, 2000, 40, BRAKE);
-                motors.moveDegrees(2000, -2000, 250, BRAKE);
-                delay(500);
                 motors.brake();
-            }
+                delay(3000);
+                motors.moveDegrees(2000,2000,60,BRAKE);
+                motors.moveDegrees(2000, -2000, 130, BRAKE);
+                evo.clearDisplay();
 
-            unsigned long startTime = millis();
-            while (millis() - startTime < 800) {
-                csleft.getRawRGBC(&lr, &lg, &lb, &lc);
-                csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                linetrack(15, 30, 12, 3000, lc, rc);
+
+                // int scene = 0;
+                // if (leftds.getDistance() < rightds.getDistance()) {
+                //     evo.clearDisplay();
+                //     evo.writeToDisplay("LEFT<RIGHT", 0, 32);
+                //     evo.drawDisplay();
+                //     while (lcolor != 3 && rcolor != 3) {
+                //         walltrackright(120, 40, 2000, 145);
+                //
+                //         csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                //         csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                //
+                //         if (leftds.getDistance() > 400) {
+                //             scene = 2;
+                //             break;
+                //         }
+
+                //             getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                //             evo.clearDisplay();
+                //             evo.writeToDisplay(lcolor, 0, 32);
+                //             evo.drawDisplay();
+                //         }
+                //     } else {
+                //         scene = 1;
+                //         evo.clearDisplay();
+                //         evo.writeToDisplay("LEFT>RIGHT", 0, 32);
+                //         evo.drawDisplay();
+                //
+                //         while (lcolor != 3 && rcolor != 3) {
+                //
+                //             walltrackleft(120, 40, 2000, 145);
+                //             csleft.getRawRGBC(&rr, &rg, &rb, &rc);
+                //             csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                //             int rightdsva = rightds.getDistance();
+                //             if (rightdsva > 350) {
+                //                 scene = 3;
+                //                 break;
+                //             }
+                //
+                //             getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                //             evo.clearDisplay();
+                //             evo.writeToDisplay(rightdsva, 0, 32);
+                //
+                //             evo.drawDisplay();
+                //         }
+                //     }
+                //
+                //     motors.brake();
+                //     evo.clearDisplay();
+                //     delay(2000);
+                //     //Scenario 0 & 2 when walltracking with left sensor
+                //     //Scneario 1 & 3 when walltracking with right sensor
+                //     if (scene == 3) {
+                //         motors.moveDegrees(-2000, -2000, 80, BRAKE);
+                //         motors.moveDegrees(2000, -2000, 100, BRAKE);
+                //     }else if (scene == 2){
+                //         motors.moveDegrees(-2000, -2000, 80, BRAKE);
+                //         motors.moveDegrees(-2000, 2000, 100, BRAKE);
+                //     }else if (scene == 1) {
+                //         motors.moveDegrees(-2000, -2000, 180, BRAKE);
+                //         motors.moveDegrees(2000, -2000, 100, BRAKE);
+                //     }else if (scene == 0) {
+                //         motors.moveDegrees(-2000, -2000, 180, BRAKE);
+                //         motors.moveDegrees(-2000, 2000, 100, BRAKE);
+                //
+                //     }
+                //     csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                //     csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                }
+            } else if (frontDistance < 90 && frontDistance != 0) {
+                if (!inLoopCount) {
+                    criteriaCount++;
+                    inLoopCount = true;
+                    evo.clearDisplay();
+                    evo.writeToDisplay(criteriaCount, 32, 32);
+                    evo.drawDisplay();
+                }
+                if (criteriaCount > 5) {
+                    break;
+                }
+                evo.clearDisplay();
+                evo.writeToDisplay("DETECTED FRONT", 32, 32);
+                evo.drawDisplay();
+                motors.brake();
+                if (leftds.getDistance() < rightds.getDistance()) {
+                    // turn right
+                    motors.moveDegrees(-4700, -4700, 120, BRAKE);
+                    motors.moveDegrees(2000, -2000, 125, BRAKE);
+                    motors.moveDegrees(4500, 4500, 130, BRAKE);
+                    while (lc > 115) {
+                        csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                        walltrackright(130, 20, 2000, 120);
+                    }
+                    leftMotor.brake();
+                    rightMotor.brake();
+
+                    motors.moveDegrees(2000, 2000, 40, BRAKE);
+                    motors.moveDegrees(-2000, 2000, 250, BRAKE);
+                    delay(500);
+                    motors.brake();
+                } else {
+                    // turn left
+                    motors.moveDegrees(-4700, -4700, 120, BRAKE);
+                    motors.moveDegrees(-2000, 2000, 125, BRAKE);
+                    motors.moveDegrees(4500, 4500, 130, BRAKE);
+                    while (rc > 115) {
+                        csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                        walltrackleft(130, 20, 2000, 120);
+                    }
+                    leftMotor.brake();
+                    rightMotor.brake();
+
+                    motors.moveDegrees(2000, 2000, 40, BRAKE);
+                    motors.moveDegrees(2000, -2000, 250, BRAKE);
+                    delay(500);
+                    motors.brake();
+                }
+
+                unsigned long startTime = millis();
+                while (millis() - startTime < 800) {
+                    csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                    csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                    linetrack(15, 30, 12, 3000, lc, rc);
+                }
+                motors.brake();
+                motors.moveDegrees(-2000, -2000, 200, BRAKE);
+                evo.playTone(1000, 200);
+                motors.moveDegrees(2500, -2500, 375, BRAKE);
+                delay(1000);
+                evo.playTone(1000, 200);
+                findline();
+                motors.brake();
+                delay(1000);
+                evo.playTone(1000, 200);
+                frontDistance = frontds.getDistance();
+            } else {
+                if (inLoopCount) {
+                    inLoopCount = false;
+                    criteriaCount = 0;
+                }
             }
-            motors.brake();
-            motors.moveDegrees(-2000, -2000, 200, BRAKE);
-            evo.playTone(1000, 200);
-            motors.moveDegrees(2500, -2500, 375, BRAKE);
-            delay(1000);
-            evo.playTone(1000, 200);
-            findline();
-            motors.brake();
-            delay(1000);
-            evo.playTone(1000, 200);
-            frontDistance = frontds.getDistance();
-        } else {
-            if (inLoopCount) {
-                inLoopCount = false;
-                criteriaCount = 0;
-            }
+            linetrack(32, 27, 12, 3000, lc, rc);
         }
-        linetrack(28, 32, 12, 3000, lc, rc);
+        motors.brake();
     }
-    motors.brake();
-}
 
-void loop() {
-    delay(10);
-    if (button.getButton(2) == 1) {
-        esp_restart();
+    void loop()
+    {
+        delay(10);
+        if (button.getButton(2) == 1) {
+            esp_restart();
+        }
     }
-}
