@@ -99,7 +99,7 @@ void setup() {
 
             evo.writeToDisplay(rcolor, 0, 8);
 
-            motors.moveDegrees(2000, 2000, 15, BRAKE);
+            motors.moveDegrees(2000, 2000, 5, BRAKE);
             csright.getRawRGBC(&rr, &rg, &rb, &rc);
             csleft.getRawRGBC(&lr, &lg, &lb, &lc);
             getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
@@ -117,7 +117,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(1800, 1800);
                 // }
-                motors.moveDegrees(2000, 2000, 25, BRAKE);
+                motors.moveDegrees(2000, 2000, 20, BRAKE);
                 motors.brake();
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
@@ -131,15 +131,15 @@ void setup() {
                 evo.writeToDisplay(int(ls), 32, 16);
                 evo.writeToDisplay(int(lv), 64, 16);
                 evo.drawDisplay();
-                delay(2000);
-                if (lc <= 110 && rc <= 110) {
+                delay(500);
+                if (lc <= 100) {
                     motors.brake();
                     evo.clearDisplay();
                     evo.writeToDisplay("Sense Blackline (L)", 0, 0);
                     delay(1000);
                     evo.drawDisplay();
                     motors.moveDegrees(2000, 2000, 55, BRAKE);
-                    motors.moveDegrees(-2000, 2000, 220, BRAKE);
+                    motors.moveDegrees(-2000, 2000, 180, BRAKE);
                     motors.moveDegrees(2000, 2000, 40, BRAKE);
                 } else {
                     motors.brake();
@@ -164,7 +164,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(2000, 2000);
                 // }
-                motors.moveDegrees(2000, 2000, 25, BRAKE);
+                motors.moveDegrees(2000, 2000, 20, BRAKE);
                 motors.brake();
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
@@ -178,8 +178,8 @@ void setup() {
                 evo.writeToDisplay(int(rs), 32, 16);
                 evo.writeToDisplay(int(rv), 64, 16);
                 evo.drawDisplay();
-                delay(2000);
-                if (lc <= 110 && rc <= 110) {
+                delay(500);
+                if (rc <= 100) {
                     csright.getRawRGBC(&rr, &rg, &rb, &rc);
                     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                     motors.brake();
@@ -188,7 +188,7 @@ void setup() {
                     delay(1000);
                     evo.drawDisplay();
                     motors.moveDegrees(2000, 2000, 55, BRAKE);
-                    motors.moveDegrees(2000, -2000, 220, BRAKE);
+                    motors.moveDegrees(2000, -2000, 180, BRAKE);
                     motors.moveDegrees(2000, 2000, 40, BRAKE);
                 } else {
                     motors.brake();
@@ -213,7 +213,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(2000, 2000);
                 // }
-                motors.moveDegrees(2000, 2000, 25, BRAKE);
+                motors.moveDegrees(2000, 2000, 20, BRAKE);
                 motors.brake();
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
@@ -227,8 +227,8 @@ void setup() {
                 evo.writeToDisplay(int(rs), 32, 16);
                 evo.writeToDisplay(int(rv), 64, 16);
                 evo.drawDisplay();
-                delay(2000);
-                if (lc <= 110 && rc <= 110) {
+                delay(500);
+                if (lc <= 100 && rc <= 100) {
                     csright.getRawRGBC(&rr, &rg, &rb, &rc);
                     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                     motors.brake();
@@ -465,9 +465,7 @@ void setup() {
         linetrack(32, 27, 12, 3000, lc, rc);
     }
 
-    motors
-            .
-            brake();
+    motors.brake();
 }
 
 void loop() {
