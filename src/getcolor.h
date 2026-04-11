@@ -22,7 +22,7 @@ struct ColorThresholds {
     float red_v_min = 20, red_v_max = 100;
     
     float green_h_min = 98, green_h_max = 110;
-    float green_s_min = 45000, green_s_max = 35; //lower s min if darker ori 37. increase s min if it senses black on green
+    float green_s_min = 50000, green_s_max = 35; //lower s min if darker ori 37. increase s min if it senses black on green
     float green_v_min = 8, green_v_max = 12;
     
     float black_h_min = 86, black_h_max = 96;
@@ -40,17 +40,20 @@ Color classifyColor(float h, float s, float v, int c, int r, int g, int b, Color
     if (r > 135 || g > 125 || b > 100){
         return COLOR_SILVER;
     }
+
     
-    if ((h*s*v) >= thresholds.green_s_min ){ //h >= thresholds.green_h_min && 
+    if ((h*s*v) >= thresholds.green_s_min ){ //h >= thresholds.green_h_min &&
         return COLOR_GREEN;
     }
-    
-    if (c > 125){
-        return COLOR_WHITE;
-    }   
-    else{
+    if (c <= 110){
         return COLOR_BLACK;
     }
+
+    if (c > 110){
+        return COLOR_WHITE;
+    }
+
+    return COLOR_WHITE; // fallback
     
 }
 

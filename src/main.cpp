@@ -26,6 +26,7 @@ void setup() {
     int criteriaCount = 0;
     int inLoopCount = false;
     int readCount = 0;
+    unsigned long greenCooldownUntil = 0;
     // color values are 0 = white, 1 = red, 2 = green, 3 = black
     if (esp_reset_reason() != ESP_RST_SW) {
         button.waitForBump(1);
@@ -84,7 +85,7 @@ void setup() {
             linetrack(26, 30, 10, 3300, lc, rc);
         }
         evo.clearDisplay();
-        if ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350))
+        if (millis() >= greenCooldownUntil && ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)))
         //if any sense green and that its not a super close object
         {
             motors.brake();
@@ -111,17 +112,27 @@ void setup() {
                 delay(1000);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                while (lcolor == 2) {
-                    csleft.getRawRGBC(&lr, &lg, &lb, &lc);
-                    getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                    motors.move(1800, 1800);
-                }
+                // while (lcolor == 2) {
+                //     csleft.getRawRGBC(&lr, &lg, &lb, &lc);
+                //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                //     motors.move(1800, 1800);
+                // }
+                motors.moveDegrees(2000, 2000, 25, BRAKE);
                 motors.brake();
-
+                csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                if (lcolor == 3
-                    ) {
+                // DEBUG: show lcolor, lc, HSV before black check
+                evo.clearDisplay();
+                evo.writeToDisplay("C1 lc lh ls lv", 0, 0);
+                evo.writeToDisplay(lcolor, 0, 8);
+                evo.writeToDisplay(int(lc), 32, 8);
+                evo.writeToDisplay(int(lh), 0, 16);
+                evo.writeToDisplay(int(ls), 32, 16);
+                evo.writeToDisplay(int(lv), 64, 16);
+                evo.drawDisplay();
+                delay(2000);
+                if (lc <= 110 && rc <= 110) {
                     motors.brake();
                     evo.clearDisplay();
                     evo.writeToDisplay("Sense Blackline (L)", 0, 0);
@@ -148,15 +159,27 @@ void setup() {
                 delay(1000);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                while (rcolor == 2) {
-                    csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                    getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                    motors.move(2000, 2000);
-                }
+                // while (rcolor == 2) {
+                //     csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                //     motors.move(2000, 2000);
+                // }
+                motors.moveDegrees(2000, 2000, 25, BRAKE);
                 motors.brake();
+                csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                if (rcolor == 3) {
+                // DEBUG: show rcolor, rc, HSV before black check
+                evo.clearDisplay();
+                evo.writeToDisplay("C2 rc rh rs rv", 0, 0);
+                evo.writeToDisplay(rcolor, 0, 8);
+                evo.writeToDisplay(int(rc), 32, 8);
+                evo.writeToDisplay(int(rh), 0, 16);
+                evo.writeToDisplay(int(rs), 32, 16);
+                evo.writeToDisplay(int(rv), 64, 16);
+                evo.drawDisplay();
+                delay(2000);
+                if (lc <= 110 && rc <= 110) {
                     csright.getRawRGBC(&rr, &rg, &rb, &rc);
                     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                     motors.brake();
@@ -185,15 +208,27 @@ void setup() {
                 delay(1000);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                while (rcolor == 2) {
-                    csright.getRawRGBC(&rr, &rg, &rb, &rc);
-                    getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                    motors.move(2000, 2000);
-                }
+                // while (rcolor == 2) {
+                //     csright.getRawRGBC(&rr, &rg, &rb, &rc);
+                //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
+                //     motors.move(2000, 2000);
+                // }
+                motors.moveDegrees(2000, 2000, 25, BRAKE);
                 motors.brake();
+                csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-                if (rcolor == 3) {
+                // DEBUG: show rcolor, rc, HSV before black check
+                evo.clearDisplay();
+                evo.writeToDisplay("C3 rc rh rs rv", 0, 0);
+                evo.writeToDisplay(rcolor, 0, 8);
+                evo.writeToDisplay(int(rc), 32, 8);
+                evo.writeToDisplay(int(rh), 0, 16);
+                evo.writeToDisplay(int(rs), 32, 16);
+                evo.writeToDisplay(int(rv), 64, 16);
+                evo.drawDisplay();
+                delay(2000);
+                if (lc <= 110 && rc <= 110) {
                     csright.getRawRGBC(&rr, &rg, &rb, &rc);
                     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                     motors.brake();
@@ -211,6 +246,7 @@ void setup() {
                     delay(1000);
                 }
             }
+            greenCooldownUntil = millis() + 1000; // ignore green for 3s after handling
         } else if ((4096 - lineLeader.readADC(2)) > 135) {
             motors.brake();
             evo.clearDisplay();
