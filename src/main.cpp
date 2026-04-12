@@ -84,7 +84,8 @@ void setup() {
             // findline();
             csleft.getRawRGBC(&lr, &lg, &lb, &lc);
             csright.getRawRGBC(&rr, &rg, &rb, &rc);
-            linetrack(45, 27, 12, 3200, lc, rc);
+            linetrack(41, 45, 1, 4800, lc, rc);
+
 
             gotRamp = true;
         }
@@ -123,7 +124,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(1800, 1800);
                 // }
-                motors.moveDegrees(2000, 2000, 20, BRAKE);
+                motors.moveDegrees(2000, 2000, 15, BRAKE);
                 motors.brake();
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
@@ -170,7 +171,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(2000, 2000);
                 // }
-                motors.moveDegrees(2000, 2000, 20, BRAKE);
+                motors.moveDegrees(2000, 2000, 15, BRAKE);
                 motors.brake();
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
@@ -219,7 +220,7 @@ void setup() {
                 //     getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
                 //     motors.move(2000, 2000);
                 // }
-                motors.moveDegrees(2000, 2000, 20, BRAKE);
+                motors.moveDegrees(2000, 2000, 5, BRAKE);
                 motors.brake();
                 csleft.getRawRGBC(&lr, &lg, &lb, &lc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
@@ -466,7 +467,7 @@ void setup() {
                 criteriaCount = 0;
             }
         }
-        linetrack(40, 27, 12, 3000, lc, rc);
+        linetrack(42, 47, 1, 3200, lc, rc);
     }
 
     motors.brake();
