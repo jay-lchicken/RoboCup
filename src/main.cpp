@@ -64,6 +64,7 @@ void setup() {
             int rightValue = map(rc, rinputmin, rinputmax, outputMin, outputMax);
         }
     }
+    bool gotRamp = false;
     while (lcolor != 1 || rcolor != 1) //while not red
     {
         csleft.getRawRGBC(&lr, &lg, &lb, &lc);
@@ -74,7 +75,8 @@ void setup() {
             readCount = 0;
         }
         readCount++;
-        while (gyro.getEulerY() > 20 || gyro.getEulerY() < -7) {
+        gotRamp = false;
+        while (gyro.getEulerY() > 20 || gyro.getEulerY() < -15) {
             evo.clearDisplay();
             evo.writeToDisplay("Up/Down Ramp", 0, 0);
             evo.drawDisplay();
@@ -82,10 +84,14 @@ void setup() {
             // findline();
             csleft.getRawRGBC(&lr, &lg, &lb, &lc);
             csright.getRawRGBC(&rr, &rg, &rb, &rc);
-            linetrack(26, 30, 10, 3300, lc, rc);
+            linetrack(45, 27, 12, 3200, lc, rc);
+
+            gotRamp = true;
         }
+
         evo.clearDisplay();
-        if ( ((lcolor == 2 && lc < 350) || (rcolor == 2 && rc < 350)))
+        evo.drawDisplay();
+        if (((lcolor == 2 && lc < 180) || (rcolor == 2 && rc < 180)))
         //if any sense green and that its not a super close object
         {
             motors.brake();
@@ -264,7 +270,7 @@ void setup() {
             csleft.getRawRGBC(&lr, &lg, &lb, &lc);
             getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
 
-            motors.moveDegrees(2000, -2000,  130, BRAKE);
+            motors.moveDegrees(2000, -2000, 130, BRAKE);
             motors.move(-4000, -4000);
             delay(6000);
             motors.brake();
@@ -313,12 +319,10 @@ void setup() {
             getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
 
             while (lcolor != 3 && rcolor != 3) {
-
                 motors.moveTime(2000, 2000, 9999);
                 csleft.getRawRGBC(&rr, &rg, &rb, &rc);
                 csright.getRawRGBC(&rr, &rg, &rb, &rc);
                 getColor(lr, lg, lb, lc, rr, rg, rb, rc, &lcolor, &rcolor);
-
             }
             motors.brake();
 
@@ -462,7 +466,7 @@ void setup() {
                 criteriaCount = 0;
             }
         }
-        linetrack(32, 27, 12, 3000, lc, rc);
+        linetrack(40, 27, 12, 3000, lc, rc);
     }
 
     motors.brake();
